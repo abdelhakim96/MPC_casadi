@@ -1,0 +1,10 @@
+/home/hakim/Desktop/Phd/projects/MPC_casadi/build/CMakeFiles/example_racecar.dir
+/home/hakim/Desktop/Phd/projects/MPC_casadi/build/CMakeFiles/example_rocket.dir
+/home/hakim/Desktop/Phd/projects/MPC_casadi/build/CMakeFiles/drone_2D.dir
+/home/hakim/Desktop/Phd/projects/MPC_casadi/build/CMakeFiles/example_basic_operations.dir
+/home/hakim/Desktop/Phd/projects/MPC_casadi/build/CMakeFiles/example_code_gen.dir
+/home/hakim/Desktop/Phd/projects/MPC_casadi/build/CMakeFiles/example_use_code_gen.dir
+/home/hakim/Desktop/Phd/projects/MPC_casadi/build/CMakeFiles/example_nlp_code_gen.dir
+/home/hakim/Desktop/Phd/projects/MPC_casadi/build/CMakeFiles/example_use_nlp_external.dir
+/home/hakim/Desktop/Phd/projects/MPC_casadi/build/CMakeFiles/edit_cache.dir
+/home/hakim/Desktop/Phd/projects/MPC_casadi/build/CMakeFiles/rebuild_cache.dir
