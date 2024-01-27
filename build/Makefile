@@ -156,6 +156,19 @@ drone_2D/fast:
 .PHONY : drone_2D/fast
 
 #=============================================================================
+# Target rules for targets named mhe
+
+# Build rule for target.
+mhe: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mhe
+.PHONY : mhe
+
+# fast build rule for target.
+mhe/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mhe.dir/build.make CMakeFiles/mhe.dir/build
+.PHONY : mhe/fast
+
+#=============================================================================
 # Target rules for targets named example_basic_operations
 
 # Build rule for target.
@@ -243,6 +256,30 @@ example/drone/drone_2D.s: example/drone/drone_2D.cpp.s
 example/drone/drone_2D.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/drone_2D.dir/build.make CMakeFiles/drone_2D.dir/example/drone/drone_2D.cpp.s
 .PHONY : example/drone/drone_2D.cpp.s
+
+example/mhe/mhe_lambda.o: example/mhe/mhe_lambda.cpp.o
+.PHONY : example/mhe/mhe_lambda.o
+
+# target to build an object file
+example/mhe/mhe_lambda.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mhe.dir/build.make CMakeFiles/mhe.dir/example/mhe/mhe_lambda.cpp.o
+.PHONY : example/mhe/mhe_lambda.cpp.o
+
+example/mhe/mhe_lambda.i: example/mhe/mhe_lambda.cpp.i
+.PHONY : example/mhe/mhe_lambda.i
+
+# target to preprocess a source file
+example/mhe/mhe_lambda.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mhe.dir/build.make CMakeFiles/mhe.dir/example/mhe/mhe_lambda.cpp.i
+.PHONY : example/mhe/mhe_lambda.cpp.i
+
+example/mhe/mhe_lambda.s: example/mhe/mhe_lambda.cpp.s
+.PHONY : example/mhe/mhe_lambda.s
+
+# target to generate assembly for a file
+example/mhe/mhe_lambda.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mhe.dir/build.make CMakeFiles/mhe.dir/example/mhe/mhe_lambda.cpp.s
+.PHONY : example/mhe/mhe_lambda.cpp.s
 
 example/other/example_basic_operations.o: example/other/example_basic_operations.cpp.o
 .PHONY : example/other/example_basic_operations.o
@@ -428,9 +465,13 @@ help:
 	@echo "... example_rocket"
 	@echo "... example_use_code_gen"
 	@echo "... example_use_nlp_external"
+	@echo "... mhe"
 	@echo "... example/drone/drone_2D.o"
 	@echo "... example/drone/drone_2D.i"
 	@echo "... example/drone/drone_2D.s"
+	@echo "... example/mhe/mhe_lambda.o"
+	@echo "... example/mhe/mhe_lambda.i"
+	@echo "... example/mhe/mhe_lambda.s"
 	@echo "... example/other/example_basic_operations.o"
 	@echo "... example/other/example_basic_operations.i"
 	@echo "... example/other/example_basic_operations.s"

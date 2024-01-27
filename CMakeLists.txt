@@ -110,6 +110,12 @@ add_executable(drone_2D example/drone/drone_2D.cpp)
 target_link_libraries(drone_2D ${CASADI_LIBRARIES} ipopt)
 
 
+add_executable(mhe example/mhe/mhe_lambda.cpp)
+target_link_libraries(mhe ${CASADI_LIBRARIES} ipopt)
+
+
+
+
 # casadi basic operations
 add_executable(example_basic_operations example/other/example_basic_operations.cpp)
 target_link_libraries(example_basic_operations ${CASADI_LIBRARIES})
