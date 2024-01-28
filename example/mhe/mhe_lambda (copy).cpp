@@ -83,21 +83,17 @@ double SineWave(double x, double f, double mean, double noise)   //Modified by H
     }
 
 
-casadi::DM predict(const Eigen::MatrixXd x_s, 
+Eigen::MatrixXd predict_test(const Eigen::MatrixXd x_s, 
 	           const Eigen::MatrixXd x_, 
 	           const Eigen::MatrixXd y_,
 	           const Eigen::MatrixXd u_,
 	           const Eigen::VectorXd theta_,
-	           casadi::DM lamb) {
+	           double lamb) {
 
     int n = y_.rows();
 
     double sigma_ = 0.0001;
     //double lamb= 1.0;
-   
-    
-     Opti opti = casadi::Opti();
-
 
     //Eigen::MatrixXd Lambda_m = Eigen::MatrixXd::Identity(y_.rows(), y_.rows());
 
@@ -135,54 +131,9 @@ casadi::DM predict(const Eigen::MatrixXd x_s,
     B_lambda = iB_lambda.llt().solve(I);
     iK_uu = K_uu.llt().solve(I);
 
-    //L_B.topLeftCorner(u_.rows(), u_.rows()).triangularView<Eigen::Lower>().solveInPlace(B_lambda);
-    //L_B.topLeftCorner(u_.rows(), u_.rows()).triangularView<Eigen::Lower>().transpose().solveInPlace(B_lambda);
- 
-    casadi::DM K_us_ca(u_.rows(), x_s.rows());
-    casadi::DM K_xu_ca(y_.rows(), u_.rows());
-    casadi::DM K_su_ca(x_s.rows(), u_.rows());
-    casadi::DM K_ux_ca(u_.rows(), x_.rows());
+   
 
-    casadi::DM B_lambda_ca(x_.rows(), x_.rows());
-
-    casadi::DM y_ca(y_.rows(), 1);
-    
-    for (int i = 0; i < u_.rows(); ++i) {
-        for (int j = 0; j < x_s.rows(); ++j) {
-            K_us_ca(i, j) = K_us(i, j);
-        }
-    }
-
-
-    for (int i = 0; i < x_.rows(); ++i) {
-    for (int j = 0; j < u_.rows(); ++j) {
-            K_xu_ca(i, j) = K_xu(i, j);
-        }
-    }
-
-    for (int i = 0; i < u_.rows(); ++i) {
-    for (int j = 0; j < x_.rows(); ++j) {
-            K_ux_ca(i, j) = K_ux(i, j);
-        }
-    }
-
-    for (int i = 0; i < x_s.rows(); ++i) {
-    for (int j = 0; j < u_.rows(); ++j) {
-            K_su_ca(i, j) = K_su(i, j);
-        }
-    }
-
-    for (int i = 0; i < x_.rows(); ++i) {
-    for (int j = 0; j < x_.rows(); ++j) {
-            B_lambda_ca(i, j) = B_lambda(i, j);
-        }
-    }
-
-    for (int j = 0; j < y_.rows(); ++j) {
-        y_ca(j) = y_(j);
-    }
-
-    casadi::DM mu = pow(sigma_, -2) * K_su_ca * B_lambda_ca * K_ux_ca * Lambda_m *  y_ca;
+    MatrixXd mu = pow(sigma_, -2) * K_us.transpose() * B_lambda * K_xu.transpose() * Lambda_m * y_;
 
     return {mu};
 }
