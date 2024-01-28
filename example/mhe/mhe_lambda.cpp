@@ -79,7 +79,7 @@ double CosWave(double x, double f, double mean, double noise)   //Modified by Ha
     {
   
 
-        double signal = 0.7* cos(f * x);
+        double signal = 0.5 * cos(f * x);
        // double noisy_signal = signal + distribution(generator);
 
         return signal;
@@ -123,7 +123,7 @@ Eigen::MatrixXd predict_test(const Eigen::MatrixXd x_s,
         Lambda_m(i, i) = Lambda_m(i + 1, i + 1) * lamb;
     }
    
-
+    //std::cout <<Lambda_m <<std::endl;
     for (size_t i = 0; i < iB_lambda.rows(); ++i) {
         for (size_t j = 0; j <= i; ++j) {
             //L_B(i, j) = iB_lambda(i,j);
@@ -186,7 +186,6 @@ casadi::MX predict(const Eigen::MatrixXd x_s,
         Lambda_m_ca(i, i) = Lambda_m(i + 1, i + 1) * lamb;
     }
      
-     
 
 
 
@@ -195,7 +194,7 @@ casadi::MX predict(const Eigen::MatrixXd x_s,
     MX  K_uu_ca(u_.rows(), u_.rows());
 
     MX  K_us_ca(u_.rows(), x_s.rows());
-    MX K_xu_ca(y_.rows(), u_.rows());
+    MX K_xu_ca(x_.rows(), u_.rows());
     MX K_su_ca(x_s.rows(), u_.rows());
     MX K_ux_ca(u_.rows(), x_.rows());
 
@@ -246,8 +245,8 @@ casadi::MX predict(const Eigen::MatrixXd x_s,
   
 
      MX _A = pow(sigma_, -2) * mtimes(K_ux_ca , Lambda_m_ca);
-     MX _B = mtimes(Lambda_m_ca , K_xu_ca);
-     MX iB_lambda_m  = K_uu_ca + mtimes(_A,_B); 
+     MX _B = mtimes(_A, K_xu_ca);
+     MX iB_lambda_m  = K_uu_ca + _B; 
 
      //MX B_lambda_ca = Inverse (iB_lambda_m);
 
@@ -276,9 +275,9 @@ int main(){
     casadi::MX lambda = opti.variable(1, 1);
    
 
-    int n = 20;
+    int n = 30;
     int n_s = 1;
-    double W_lambda = 20.0;
+    double W_lambda =1.0;
 
     Eigen::VectorXd X_data = Eigen::VectorXd::LinSpaced(n, 0, 2 * M_PI);
 
@@ -295,18 +294,18 @@ int main(){
 
 
 
-
+  
    Eigen::VectorXd theta_0(2);
     theta_0 << 1.0 , 1.0; 
 
     double scale = 2.0;
-    double sigma_ = 0.00001;
+    double sigma_ = 0.001;
 
     Eigen::VectorXd U = Calculate_inducing_points(scale,X_data);
     
     Eigen::VectorXd X_s(1);
 
-    X_s << n; 
+    X_s << X_data[n-1]; 
 
 
     casadi::MX mu ;
@@ -317,14 +316,14 @@ int main(){
          
          {      
 
-         	    X_s << n; 
+         	    X_s << X_data[n-1]; 
          	    double Y_g = SineWave(X_s(0), 1.0, 0.0, 0.0) + CosWave(X_s(0), 1.0, 0.0, 0.0);
                
          	    casadi::MX mu =  predict(X_s, X_data , Y_data , U, theta_0, lambda, opti,sigma_) ;
 
 
 
-	           J = J + (W_lambda*(mu-Y_g)*(mu-Y_g));
+	           J = ((W_lambda)*(mu-Y_g)*(mu-Y_g));
 
 
 		  }
@@ -377,14 +376,14 @@ int main(){
          
          {      
                 double l=0.7;
-         	    X_s << n ; 
+         	    X_s << X_data[n-1] ; 
          	    double Y_g = SineWave(X_s(0), 1.0, 0.0, 0.0)+ CosWave(X_s(0), 1.0, 0.0, 0.0);
 
          	    mu_test =  predict_test(X_s, X_data , Y_data , U, theta_0, l,sigma_) ;
 
 	            
 
-	           cost1 = cost1 + (mu_test(0,0)-Y_g)*(mu_test(0,0)-Y_g);
+	           cost1 = (mu_test(0,0)-Y_g)*(mu_test(0,0)-Y_g);
 
 
 		  }
@@ -393,13 +392,13 @@ int main(){
          
          {      
                 double l=0.8;
-         	    X_s << n; 
+         	    X_s << X_data[n-1]; 
          	    double Y_g = SineWave(X_s(0), 1.0, 0.0, 0.0)+CosWave(X_s(0), 1.0, 0.0, 0.0);
 
          	    mu_test =  predict_test(X_s, X_data , Y_data , U, theta_0, l,sigma_) ;
 
                 
-	           cost2 = cost2 + (mu_test(0,0)-Y_g)*(mu_test(0,0)-Y_g);
+	           cost2 = (mu_test(0,0)-Y_g)*(mu_test(0,0)-Y_g);
 
 
 		  }
@@ -409,14 +408,14 @@ int main(){
          
          {      
                 double l=1.0;
-         	    X_s << n; 
+         	    X_s << X_data[n-1]; 
          	    double Y_g = SineWave(X_s(0), 1.0, 0.0, 0.0)+CosWave(X_s(0), 1.0, 0.0, 0.0);
 
          	    mu_test =  predict_test(X_s, X_data , Y_data , U, theta_0, l,sigma_) ;
 
 	
 
-	           cost3 = cost3 + (mu_test(0,0)-Y_g)*(mu_test(0,0)-Y_g);
+	           cost3 = (mu_test(0,0)-Y_g)*(mu_test(0,0)-Y_g);
 
 
 		  }
@@ -427,14 +426,14 @@ int main(){
                // double l=double(0.1);
                double l=double(solution->value(lambda)(0, 0));
          	   //double l=1.0;
-         	    X_s << n; 
+         	    X_s << X_data[n-1]; 
          	    double Y_g = SineWave(X_s(0), 1.0, 0.0, 0.0)+CosWave(X_s(0), 1.0, 0.0, 0.0);
 
          	    mu_test =  predict_test(X_s, X_data , Y_data , U, theta_0, l,sigma_) ;
 
 	
 
-	           cost4 = cost4 + (mu_test(0,0)-Y_g)*(mu_test(0,0)-Y_g);
+	           cost4 =  (mu_test(0,0)-Y_g)*(mu_test(0,0)-Y_g);
 
 
 		  }
